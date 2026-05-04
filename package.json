@@ -1,0 +1,11 @@
+{
+  "name": "sellify-connector",
+  "version": "1.0.0",
+  "description": "ODBC- und REST-Connector für sellify OnTour",
+  "main": "index.js",
+  "engines": { "node": ">=16" },
+  "optionalDependencies": {
+    "odbc": ">=2.0.0"
+  },
+  "license": "UNLICENSED"
+}
