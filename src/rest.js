@@ -179,7 +179,7 @@ async function apiGet(profile, path, params) {
 
 // Alle Seiten eines paginierten Endpunkts abrufen
 async function apiGetAll(profile, path, extraParams = {}) {
-  const limit = 500;
+  const limit = 100;
   let offset  = 0;
   const all   = [];
   for (;;) {
@@ -315,8 +315,9 @@ function mapProject(p) {
 
 // ── Public API ──────────────────────────────────────────────────────────────
 
-async function getContacts(profile) {
-  const items = await apiGetAll(profile, '/contacts');
+async function getContacts(profile, { limit = 50, offset = 0 } = {}) {
+  const page = await apiGet(profile, '/contacts', { limit, offset });
+  const items = Array.isArray(page) ? page : (page?.items ?? page?.value ?? page?.data ?? []);
   return items.map(mapContactListItem)
     .sort((a, b) => a.name.localeCompare(b.name, 'de'));
 }
@@ -330,9 +331,10 @@ async function getContact(profile, id) {
   return mapContactDetail(c, pArr);
 }
 
-async function getPersons(profile) {
+async function getPersons(profile, { limit = 50, offset = 0 } = {}) {
   try {
-    const items = await apiGetAll(profile, '/persons');
+    const page = await apiGet(profile, '/persons', { limit, offset });
+    const items = Array.isArray(page) ? page : (page?.items ?? page?.value ?? page?.data ?? []);
     return items.map(p => mapPersonListItem(p, null))
       .sort((a, b) => a.display_name.localeCompare(b.display_name, 'de'));
   } catch (e) {
@@ -341,8 +343,9 @@ async function getPersons(profile) {
   }
 }
 
-async function getProjects(profile) {
-  const items = await apiGetAll(profile, '/projects');
+async function getProjects(profile, { limit = 50, offset = 0 } = {}) {
+  const page = await apiGet(profile, '/projects', { limit, offset });
+  const items = Array.isArray(page) ? page : (page?.items ?? page?.value ?? page?.data ?? []);
   return items.map(mapProject)
     .sort((a, b) => a.name.localeCompare(b.name, 'de'));
 }
